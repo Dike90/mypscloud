@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_order_food_order_food,order_food.order_food,model_order_food_order_food,,1,0,0,0
