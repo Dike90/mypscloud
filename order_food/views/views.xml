@@ -1,40 +1,111 @@
+<?xml version="1.1" encoding="UTF-8"?>
 <odoo>
   <data>
+    <!-- explicit list view definition -->
 
-    <record model="ir.ui.view" id="order_food.list">
-      <field name="name">order_food list</field>
-      <field name="model">order_food.food_menu</field>
+    <record model="ir.ui.view" id="order_food.food_list">
+      <field name="name">菜谱列表</field>
+      <field name="model">order_food.food</field>
       <field name="arch" type="xml">
-        <tree>
+        <tree string="列表">
           <field name="name"/>
-          <field name="menu_date"/>
-          <field name="food_ids"/>
+          <field name="food_date"/>
+          <field name="price"/>
+          <!--<field name="stock"/>-->
+          <field name="description"/>
         </tree>
       </field>
     </record>
 
+    <record model="ir.ui.view" id="order_food.food_form">
+      <field name="name">菜谱单</field>
+      <field name="model">order_food.food</field>
+      <field name="arch" type="xml">
+        <form string="菜谱">
+          <group>
+            <group>
+              <field name="food_image" widget="image" class="oe_avatar oe_right"/>
+              <field name="name"/>
+              <field name="food_date"/>
+              <field name="price"/>
+              <field name="description"/>
+            </group>
+          </group>
+
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="order_food.order_form">
+      <field name="name">订餐</field>
+      <field name="model">order_food.order</field>
+      <field name="arch" type="xml">
+        <form string="订单信息">
+            <header>
+
+                <button name="order_food" type="object"
+                                string="订餐" class="oe_highlight"/>
+                <button special="cancel" string="取消"/>
+                <field name="state" widget="statusbar"
+                                statusbar_visible="点餐,付款" />
+            </header>
+          <sheet>
+
+            <group>
+              <!--<field name="order_no"/>-->
+              <field name="user_ids"/>
+              <field name="amount"/>
+              <!--<field name="payment_info"/>-->
+            </group>
+            <!--<label for="food_ids"/>            widget="one2many_list"-->
+            <field name="food_ids"  />
+              <!--<tree string="课程列表" editable="bottom"> &lt;!&ndash;editable="bottom" 使单据可以在明细处编辑&ndash;&gt;-->
+                <!--<field name="name"/>-->
+                <!--<field name="price"/>-->
+                <!--<field name="food_date"/>-->
+              <!--</tree>-->
+            <!--</field>-->
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <record model="ir.ui.view" id="order_food.order_list">
+      <field name="name">订餐列表</field>
+      <field name="model">order_food.order</field>
+      <field name="arch" type="xml">
+        <tree string="订餐列表">
+          <field name="user_ids"/>
+          <field name="food_ids"/>
+          <field name="amount"/>
+        </tree>
+      </field>
+    </record>
+    <!-- actions opening views on models -->
+    <record model="ir.actions.act_window" id="order_food.action_window_foodmanage">
+        <!--页面上显示的-->
+        <field name="name">菜谱</field>
+        <field name="res_model">order_food.food</field>
+        <field name="view_mode">tree,form</field>
+
+    </record>
 
     <!-- actions opening views on models -->
-    <record model="ir.actions.act_window" id="order_food.action_window">
-      <field name="name">order_food window</field>
-      <field name="res_model">order_food.food_menu</field>
+    <record model="ir.actions.act_window" id="order_food.action_window_order">
+      <field name="name">订餐</field>
+      <field name="res_model">order_food.order</field>
       <field name="view_mode">tree,form</field>
     </record>
 
-
     <!-- Top menu item -->
 
-    <menuitem name="order_food" id="order_food.menu_root"/>
+    <menuitem name="订餐管理" id="order_food.menu_root"/>
 
     <!-- menu categories -->
 
-    <menuitem name="菜谱" id="order_food.food_menu" parent="order_food.menu_root"/>
-    <menuitem name="订餐" id="order_food.order_food" parent="order_food.menu_root"/>
+    <menuitem name="订餐" id="order_food.order" parent="order_food.menu_root" action="order_food.action_window_order"/>
+    <menuitem name="管理" id="order_food.manage" parent="order_food.menu_root" action="order_food.action_window_foodmanage"/>
 
-    <!-- actions -->
-
-    <menuitem name="List" id="order_food.menu_1_list" parent="order_food.food_menu"
-              action="order_food.action_window"/>
 
 
   </data>
