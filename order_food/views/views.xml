@@ -48,7 +48,9 @@
       <field name="arch" type="xml">
         <form string="订单信息">
             <header>
-
+                <button name="%(order_food.action_window_showqrimage)d" type="action" string="订餐"
+                        context ="{'id':3}"
+                        attrs="{'invisible': [('state', '=', 0 )]}"/>
                 <button name="order_food" type="object"
                                 string="订餐" class="oe_highlight"/>
                 <button special="cancel" string="取消"/>
@@ -67,30 +69,57 @@
             <field name="week_of_today" invisible="1"/>
             <!--domain="[('food_date','=',parent.week_of_today)]" 不管用 context="{'week_of_today': week_of_today}" -->
             <!--food_date 和 week_of_day不属于同一个model，为什么可以-->
-            <field name="food_ids"  domain="[('food_date','=',week_of_today)]"/>
-              <!--<tree string="课程列表" editable="bottom"> &lt;!&ndash;editable="bottom" 使单据可以在明细处编辑&ndash;&gt;-->
-                <!--<field name="name"/>-->
-                <!--<field name="price"/>-->
-                <!--<field name="food_date"/>-->
-              <!--</tree>-->
-            <!--</field>-->
+            <field name="detail_ids"  >
+              <tree string="订单详情" editable="bottom"> <!--editable="bottom" 使单据可以在明细处编辑-->
+                <field name="sequence" widget="handle"/>
+                <field name="food_id" domain="[('food_date','=', parent.week_of_today)]"/>
+                <field name="order_id" invisible="1" />
+                <field name="sale_price" />
+                <field name="quantity"/>
+              </tree>
+            </field>
           </sheet>
         </form>
       </field>
     </record>
 
 
-    <!--图表，二维图表，可以切换条形图、饼图、折线图，并可以选择测量维度-->
-    <!--<record model="ir.ui.view" id="order_food_graph_view">-->
-        <!--<field name="name">order.food.graph</field>-->
-        <!--<field name="model">order_food.order</field>-->
-        <!--<field name="arch" type="xml">-->
-            <!--<graph string="Participations by Courses">-->
-                <!--<field name="course_id"/>  &lt;!&ndash;横轴&ndash;&gt;-->
-                <!--<field name="attendees_count" type="measure"/>  &lt;!&ndash;纵轴的测量维度可选&ndash;&gt;-->
-            <!--</graph>-->
-        <!--</field>-->
-    <!--</record>-->
+    <record model="ir.ui.view" id="order_food.order_list">
+      <field name="name">订单列表</field>
+      <field name="model">order_food.order</field>
+      <field name="arch" type="xml">
+        <tree string="订单">
+          <field name="user_id"/>
+          <field name="detail_ids"/>
+          <field name="amount"/>
+        </tree>
+      </field>
+    </record>
+
+    图表，二维图表，可以切换条形图、饼图、折线图，并可以选择测量维度
+    <record model="ir.ui.view" id="order_food_graph_view">
+        <field name="name">order.food.graph</field>
+        <field name="model">order_food.detail</field>
+        <field name="arch" type="xml">
+            <graph string="今日订餐">
+                <field name="food_id"/>  <!--横轴-->
+                <field name="quantity" type="measure"/>  <!--纵轴的测量维度可选-->
+            </graph>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="order_food_qrimage_form">
+        <field name="name">order.food.qr.form</field>
+        <field name="model">order_food.qrimage</field>
+        <field name="arch" type="xml">
+            <form string="付款二维码">
+              <sheet>
+                <field name="owner" />
+                <field name="QRimage" widget="image" class="oe_screenshot"/>  <!--横轴-->
+              </sheet>
+            </form>
+        </field>
+    </record>
 
     <!-- actions opening views on models -->
     <record model="ir.actions.act_window" id="order_food.action_window_foodmanage">
@@ -98,7 +127,6 @@
         <field name="name">菜谱</field>
         <field name="res_model">order_food.food</field>
         <field name="view_mode">tree,form</field>
-
     </record>
 
     <!-- actions opening views on models -->
@@ -107,7 +135,18 @@
       <field name="res_model">order_food.order</field>
       <field name="view_mode">tree,form</field>
     </record>
+    <!-- actions opening views on models -->
+    <record model="ir.actions.act_window" id="order_food.action_window_today_order">
+      <field name="name">今日订餐窗口</field>
+      <field name="res_model">order_food.detail</field>
+      <field name="view_mode">graph</field>
+    </record>
 
+    <record model="ir.actions.act_window" id="order_food.action_window_showqrimage">
+      <field name="name">付款二维码窗口</field>
+      <field name="res_model">order_food.qrimage</field>
+      <field name="view_mode">form,tree</field>
+    </record>
     <!-- Top menu item -->
 
     <menuitem name="订餐管理" id="order_food.menu_root"/>
@@ -115,9 +154,9 @@
     <!-- menu categories -->
 
     <menuitem name="订餐" id="order_food.order" parent="order_food.menu_root" action="order_food.action_window_order"/>
-    <menuitem name="管理" id="order_food.manage" parent="order_food.menu_root" action="order_food.action_window_foodmanage"/>
-
-
+    <menuitem name="菜品维护" id="order_food.manage" parent="order_food.menu_root" action="order_food.action_window_foodmanage"/>
+    <menuitem name="今日订餐" id="order_food.today_order" parent="order_food.menu_root" action="order_food.action_window_today_order"/>
+    <menuitem name="维护付款信息" id="order_food.pay_info" parent="order_food.menu_root" action="order_food.action_window_showqrimage"/>
 
   </data>
 </odoo>
