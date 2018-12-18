@@ -96,6 +96,8 @@
         <field name="arch" type="xml">
             <search>
 
+                <filter name="today" string="今天" domain="[('detail_date','&gt;=', datetime.datetime.combine(context_today(),
+                    datetime.time(0,0,0))), ('detail_date','&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]"/>
             </search>
         </field>
     </record>
@@ -104,6 +106,7 @@
     <record model="ir.ui.view" id="order_food_graph_view">
         <field name="name">order.food.graph</field>
         <field name="model">order_food.detail</field>
+
         <field name="arch" type="xml">
             <graph string="今日订餐">
                 <field name="food_id"/>  <!--横轴-->
@@ -111,6 +114,20 @@
             </graph>
         </field>
     </record>
+
+      <!--&lt;!&ndash;图表，二维图表，可以切换条形图、饼图、折线图，并可以选择测量维度&ndash;&gt;-->
+    <!--<record model="ir.ui.view" id="order_food_pivot_view">-->
+        <!--<field name="name">order.food.order_graph</field>-->
+        <!--<field name="model">order_food.order</field>-->
+        <!--<field name="arch" type="xml">-->
+            <!--<pivot string="订餐统计">-->
+                <!--<field name="order_date" interval="day" type="row"/>  &lt;!&ndash;横轴&ndash;&gt;-->
+                <!--<field name="detail_ids" >  &lt;!&ndash;纵轴的测量维度可选&ndash;&gt;-->
+                    <!--<field name="quantity" type="col"/>-->
+                <!--</field>-->
+            <!--</pivot>-->
+        <!--</field>-->
+    <!--</record>-->
 
     <record model="ir.ui.view" id="order_food_qrimage_form">
         <field name="name">order.food.qr.form</field>
@@ -154,12 +171,14 @@
     <record model="ir.actions.act_window" id="order_food.action_window_order">
       <field name="name">订餐</field>
       <field name="res_model">order_food.order</field>
-      <field name="view_mode">tree,form</field>
+      <field name="view_mode">tree,form,pivot</field>
     </record>
     <!-- actions opening views on models -->
     <record model="ir.actions.act_window" id="order_food.action_window_today_order">
       <field name="name">今日订餐窗口</field>
-      <field name="res_model">order_food.detail</field>
+        <field name="res_model">order_food.detail</field>
+        <!--添加默认过滤器-->
+        <field name="context" eval="{'search_default_today': 1}"/>
       <field name="view_mode">graph</field>
     </record>
 
