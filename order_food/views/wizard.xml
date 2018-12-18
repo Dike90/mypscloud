@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record model="ir.ui.view" id="my_order_food_wizard">
+        <field name="name">付款码</field>
+        <field name="model">order_food.wizard</field>
+        <field name="type">form</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                  <field name="department"/>
+                  <field name="image" widget="image" class="oe_screenshot"/>
+                </group>
+                <footer>
+                    <button string="取消" special="cancel" class="oe_highlight"/>
+                    <button name="confirm_pay" string="付款" type="object" class="oe_highlight" />
+                </footer>
+            </form>
+        </field>
+    </record>
+</odoo>
