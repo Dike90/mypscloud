@@ -1,4 +1,4 @@
-<?xml version="1.1" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
   <data>
     <!-- explicit list view definition -->
@@ -11,9 +11,8 @@
           <field name="name"/>
           <field name="food_date"/>
           <field name="price"/>
-          <!--<field name="stock"/>-->
           <field name="description"/>
-          <!--<field name="food_image" />-->
+          <field name="food_image" widget="image" class="oe_avatar"/>
         </tree>
       </field>
     </record>
@@ -26,7 +25,6 @@
           <sheet>
               <group>
                 <group>
-
                   <field name="name" class="oe_title"/>
                   <field name="price"/>
                 </group>
@@ -48,9 +46,6 @@
       <field name="arch" type="xml">
         <form string="订单信息">
             <header>
-                <button name="%(order_food.action_window_showqrimage)d" type="action" string="订餐"
-                        context ="{'id':3}"
-                        attrs="{'invisible': [('state', '=', 0 )]}"/>
                 <button name="order_food" type="object"
                                 string="订餐" class="oe_highlight"/>
                 <button special="cancel" string="取消"/>
@@ -58,12 +53,11 @@
                                 <!--statusbar_visible="点餐,付款" />-->
             </header>
           <sheet>
-
             <group>
-              <!--<field name="order_no"/>-->
               <field name="user_id"/>
               <field name="amount"/>
-              <!--<field name="payment_info"/>-->
+              <field name="payment_info" >
+              </field>
             </group>
             <!--<label for="food_ids"/>            widget="one2many_list"-->
             <field name="week_of_today" invisible="1"/>
@@ -96,7 +90,17 @@
       </field>
     </record>
 
-    图表，二维图表，可以切换条形图、饼图、折线图，并可以选择测量维度
+    <record model="ir.ui.view" id="order_food.detail_search">
+        <field name="name">order_food.search</field>
+        <field name="model">order_food.detail</field>
+        <field name="arch" type="xml">
+            <search>
+
+            </search>
+        </field>
+    </record>
+
+    <!--图表，二维图表，可以切换条形图、饼图、折线图，并可以选择测量维度-->
     <record model="ir.ui.view" id="order_food_graph_view">
         <field name="name">order.food.graph</field>
         <field name="model">order_food.detail</field>
@@ -114,11 +118,28 @@
         <field name="arch" type="xml">
             <form string="付款二维码">
               <sheet>
-                <field name="owner" />
-                <field name="QRimage" widget="image" class="oe_screenshot"/>  <!--横轴-->
+                  <group>
+                    <field name="owner" />
+                    <field name="department"/>
+                    <field name="QRimage" widget="image" class="oe_screenshot"/>  <!--横轴-->
+                  </group>
               </sheet>
             </form>
         </field>
+    </record>
+
+    <record model="ir.ui.view" id="order_food_qrimage_list">
+    <field name="name">order.food.qr.list</field>
+    <field name="model">order_food.qrimage</field>
+    <field name="arch" type="xml">
+        <tree string="付款信息列表">
+
+            <field name="owner" />
+            <field name="department"/>
+            <field name="QRimage" widget="image" class="oe_avatar"/>  <!--横轴-->
+
+        </tree>
+    </field>
     </record>
 
     <!-- actions opening views on models -->
@@ -145,7 +166,7 @@
     <record model="ir.actions.act_window" id="order_food.action_window_showqrimage">
       <field name="name">付款二维码窗口</field>
       <field name="res_model">order_food.qrimage</field>
-      <field name="view_mode">form,tree</field>
+      <field name="view_mode">tree,form</field>
     </record>
     <!-- Top menu item -->
 
