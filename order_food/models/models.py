@@ -42,8 +42,9 @@ class order(models.Model):
     week_of_today = fields.Integer(default=compute_today)
     # 计算字段默认是不存储的，若需要存储需要加store=True
     amount = fields.Float(string='金额', compute='_calc_amount', store=True)
-    payment_info = fields.Selection(string='所属部门',selection=[(1,'PS产品部'),(2,'战略产品部'),(3,'营销')])
-
+    payment_info = fields.Selection(string='所属部门',selection=[(1,'PS产品部'),(2,'战略产品部'),(3,'营销')],default=1)
+    _sql_constraints = [
+             ('部门非空', 'CHECK(payment_info >0)','所属部门不能为空!')]
 
 
     @api.depends()
