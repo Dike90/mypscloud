@@ -1,4 +1,4 @@
-<?xml version="1.1" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
   <data>
     <!-- explicit list view definition -->
@@ -11,8 +11,8 @@
           <field name="name"/>
           <field name="food_date"/>
           <field name="price"/>
-          <!--<field name="stock"/>-->
           <field name="description"/>
+          <field name="food_image" widget="image" class="oe_avatar"/>
         </tree>
       </field>
     </record>
@@ -22,16 +22,20 @@
       <field name="model">order_food.food</field>
       <field name="arch" type="xml">
         <form string="菜谱">
-          <group>
-            <group>
-              <field name="food_image" widget="image" class="oe_avatar oe_right"/>
-              <field name="name"/>
-              <field name="food_date"/>
-              <field name="price"/>
+          <sheet>
+              <group>
+                <group>
+                  <field name="name" class="oe_title"/>
+                  <field name="price"/>
+                </group>
+                <group>
+                  <field name="food_image" widget="image" class="oe_avatar oe_right"/>
+                  <field name="food_date"/>
+                </group>
+              </group>
+              <p>描述</p>
               <field name="description"/>
-            </group>
-          </group>
-
+          </sheet>
         </form>
       </field>
     </record>
@@ -42,61 +46,147 @@
       <field name="arch" type="xml">
         <form string="订单信息">
             <header>
-
                 <button name="order_food" type="object"
                                 string="订餐" class="oe_highlight"/>
                 <button special="cancel" string="取消"/>
-                <field name="state" widget="statusbar"
-                                statusbar_visible="点餐,付款" />
+                <field name="state" widget="statusbar" />
+                                <!--statusbar_visible="点餐,付款" />-->
             </header>
           <sheet>
-
             <group>
-              <!--<field name="order_no"/>-->
-              <field name="user_ids"/>
+              <field name="user_id"/>
               <field name="amount"/>
-              <!--<field name="payment_info"/>-->
+              <field name="payment_info" >
+              </field>
             </group>
             <!--<label for="food_ids"/>            widget="one2many_list"-->
-            <field name="food_ids"  />
-              <!--<tree string="课程列表" editable="bottom"> &lt;!&ndash;editable="bottom" 使单据可以在明细处编辑&ndash;&gt;-->
-                <!--<field name="name"/>-->
-                <!--<field name="price"/>-->
-                <!--<field name="food_date"/>-->
-              <!--</tree>-->
-            <!--</field>-->
+            <field name="week_of_today" invisible="1"/>
+            <!--domain="[('food_date','=',parent.week_of_today)]" 不管用 context="{'week_of_today': week_of_today}" -->
+            <!--food_date 和 week_of_day不属于同一个model，为什么可以-->
+            <field name="detail_ids"  >
+              <tree string="订单详情" editable="bottom"> <!--editable="bottom" 使单据可以在明细处编辑-->
+                <field name="sequence" widget="handle"/>
+                <field name="food_id" domain="[('food_date','=', parent.week_of_today)]"/>
+                <field name="order_id" invisible="1" />
+                <field name="sale_price" />
+                <field name="quantity"/>
+              </tree>
+            </field>
           </sheet>
         </form>
       </field>
     </record>
 
+
     <record model="ir.ui.view" id="order_food.order_list">
-      <field name="name">订餐列表</field>
+      <field name="name">订单列表</field>
       <field name="model">order_food.order</field>
       <field name="arch" type="xml">
-        <tree string="订餐列表">
-          <field name="user_ids"/>
-          <field name="food_ids"/>
+        <tree string="订单">
+          <field name="user_id"/>
+          <field name="detail_ids"/>
           <field name="amount"/>
         </tree>
       </field>
     </record>
+
+    <record model="ir.ui.view" id="order_food.detail_search">
+        <field name="name">order_food.search</field>
+        <field name="model">order_food.detail</field>
+        <field name="arch" type="xml">
+            <search>
+
+                <filter name="today" string="今天" domain="[('detail_date','&gt;=', datetime.datetime.combine(context_today(),
+                    datetime.time(0,0,0))), ('detail_date','&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]"/>
+            </search>
+        </field>
+    </record>
+
+    <!--图表，二维图表，可以切换条形图、饼图、折线图，并可以选择测量维度-->
+    <record model="ir.ui.view" id="order_food_graph_view">
+        <field name="name">order.food.graph</field>
+        <field name="model">order_food.detail</field>
+
+        <field name="arch" type="xml">
+            <graph string="今日订餐">
+                <field name="food_id"/>  <!--横轴-->
+                <field name="quantity" type="measure"/>  <!--纵轴的测量维度可选-->
+            </graph>
+        </field>
+    </record>
+
+      <!--&lt;!&ndash;图表，二维图表，可以切换条形图、饼图、折线图，并可以选择测量维度&ndash;&gt;-->
+    <!--<record model="ir.ui.view" id="order_food_pivot_view">-->
+        <!--<field name="name">order.food.order_graph</field>-->
+        <!--<field name="model">order_food.order</field>-->
+        <!--<field name="arch" type="xml">-->
+            <!--<pivot string="订餐统计">-->
+                <!--<field name="order_date" interval="day" type="row"/>  &lt;!&ndash;横轴&ndash;&gt;-->
+                <!--<field name="detail_ids" >  &lt;!&ndash;纵轴的测量维度可选&ndash;&gt;-->
+                    <!--<field name="quantity" type="col"/>-->
+                <!--</field>-->
+            <!--</pivot>-->
+        <!--</field>-->
+    <!--</record>-->
+
+    <record model="ir.ui.view" id="order_food_qrimage_form">
+        <field name="name">order.food.qr.form</field>
+        <field name="model">order_food.qrimage</field>
+        <field name="arch" type="xml">
+            <form string="付款二维码">
+              <sheet>
+                  <group>
+                    <field name="owner" />
+                    <field name="department"/>
+                    <field name="QRimage" widget="image" class="oe_screenshot"/>  <!--横轴-->
+                  </group>
+              </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record model="ir.ui.view" id="order_food_qrimage_list">
+    <field name="name">order.food.qr.list</field>
+    <field name="model">order_food.qrimage</field>
+    <field name="arch" type="xml">
+        <tree string="付款信息列表">
+
+            <field name="owner" />
+            <field name="department"/>
+            <field name="QRimage" widget="image" class="oe_avatar"/>  <!--横轴-->
+
+        </tree>
+    </field>
+    </record>
+
     <!-- actions opening views on models -->
     <record model="ir.actions.act_window" id="order_food.action_window_foodmanage">
         <!--页面上显示的-->
         <field name="name">菜谱</field>
         <field name="res_model">order_food.food</field>
         <field name="view_mode">tree,form</field>
-
     </record>
 
     <!-- actions opening views on models -->
     <record model="ir.actions.act_window" id="order_food.action_window_order">
       <field name="name">订餐</field>
       <field name="res_model">order_food.order</field>
-      <field name="view_mode">tree,form</field>
+      <field name="view_mode">tree,form,pivot</field>
+    </record>
+    <!-- actions opening views on models -->
+    <record model="ir.actions.act_window" id="order_food.action_window_today_order">
+      <field name="name">今日订餐窗口</field>
+        <field name="res_model">order_food.detail</field>
+        <!--添加默认过滤器-->
+        <field name="context" eval="{'search_default_today': 1}"/>
+      <field name="view_mode">graph</field>
     </record>
 
+    <record model="ir.actions.act_window" id="order_food.action_window_showqrimage">
+      <field name="name">付款二维码窗口</field>
+      <field name="res_model">order_food.qrimage</field>
+      <field name="view_mode">tree,form</field>
+    </record>
     <!-- Top menu item -->
 
     <menuitem name="订餐管理" id="order_food.menu_root"/>
@@ -104,9 +194,9 @@
     <!-- menu categories -->
 
     <menuitem name="订餐" id="order_food.order" parent="order_food.menu_root" action="order_food.action_window_order"/>
-    <menuitem name="管理" id="order_food.manage" parent="order_food.menu_root" action="order_food.action_window_foodmanage"/>
-
-
+    <menuitem name="菜品维护" id="order_food.manage" parent="order_food.menu_root" action="order_food.action_window_foodmanage"/>
+    <menuitem name="今日订餐" id="order_food.today_order" parent="order_food.menu_root" action="order_food.action_window_today_order"/>
+    <menuitem name="维护付款信息" id="order_food.pay_info" parent="order_food.menu_root" action="order_food.action_window_showqrimage"/>
 
   </data>
 </odoo>
