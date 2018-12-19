@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <record model="ir.ui.view" id="order_food_report_pivot">
+            <field name="name">订餐统计表</field>
+            <field name="model">order_food.report</field>
+            <field name="arch" type="xml">
+                <pivot string="订餐统计表" disable_linking="True">
+                    <field name="department_id" type="row"/>
+                    <field name="order_date" interval="day" type="col"/>
+                    <field name="food_name" type="measure"/>
+                    <field name="quantity" type="measure"/>
+                    <field name="sale_price" type="measure"/>
+                </pivot>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="order_food_report_graph">
+            <field name="name">订餐统计图</field>
+            <field name="model">order_food.report</field>
+            <field name="arch" type="xml">
+                <graph string="订餐统计图">
+                    <field name="food_name" type="row"/>
+                    <field name="order_date" interval="day" type="col"/>
+                    <field name="quantity" type="measure"/>
+                </graph>
+            </field>
+        </record>
+
+
+
+    <record model="ir.ui.view" id="order_food.report_search">
+        <field name="name">订餐视图搜索</field>
+        <field name="model">order_food.report</field>
+        <field name="arch" type="xml">
+            <search>
+                <filter name="today" string="今天" domain="[('order_date','&gt;=', datetime.datetime.combine(context_today(),
+                    datetime.time(0,0,0))), ('order_date','&lt;=', datetime.datetime.combine(context_today(), datetime.time(23,59,59)))]"/>
+                <separator/>
+                <filter name="department1" string="PS产品部门" domain="[('department_id','=',1)]" />
+                <filter name="department2" string="战略产品部门" domain="[('department_id','=',2)]" />
+                <filter name="department3" string="营销部" domain="[('department_id','=',3)]" />
+            </search>
+        </field>
+    </record>
+
+    <record id="order_food_report_action" model="ir.actions.act_window">
+        <field name="name">订餐统计</field>
+        <field name="res_model">order_food.report</field>
+        <field name="view_type">form</field>
+        <field name="view_mode">graph,pivot</field>
+        <field name="context">{'search_default_today': 1}</field>
+        <field name="view_id"></field>  <!-- force empty -->
+        <field name="help">统计订餐数量</field>
+    </record>
+
+    <menuitem id="order_food_report" name="订餐统计" parent="order_food.menu_root"  action="order_food_report_action"/>
+
+</odoo>

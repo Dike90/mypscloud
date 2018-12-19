@@ -44,7 +44,7 @@ class order(models.Model):
     amount = fields.Float(string='金额', compute='_calc_amount', store=True)
     payment_info = fields.Selection(string='所属部门',selection=[(1,'PS产品部'),(2,'战略产品部'),(3,'营销')],default=1)
     _sql_constraints = [
-             ('部门非空', 'CHECK(payment_info >0)','所属部门不能为空!')]
+             ('部门非空', 'CHECK(payment_info >0)', '所属部门不能为空!')]
 
 
     @api.depends()
@@ -78,15 +78,7 @@ class order(models.Model):
                 'view_id': self.env.ref('order_food.my_order_food_wizard', False).id,
                 'target': 'new',
             }
-            # return {
-            #     'name': '付款二维码窗口',
-            #     'type': 'ir.actions.act_window',
-            #     'res_model': 'order_food.qrimage',
-            #     'view_type': 'form',
-            #     'view_mode': 'form',
-            #     'target': 'self',
-            #     'view_id': 'order_food_qrimage_form.id',
-            # }
+
 
 
 class order_detail(models.Model):
