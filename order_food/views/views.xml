@@ -102,18 +102,18 @@
         </field>
     </record>
 
-    <!--图表，二维图表，可以切换条形图、饼图、折线图，并可以选择测量维度-->
-    <record model="ir.ui.view" id="order_food_graph_view">
-        <field name="name">order.food.graph</field>
-        <field name="model">order_food.detail</field>
+    <!--&lt;!&ndash;图表，二维图表，可以切换条形图、饼图、折线图，并可以选择测量维度&ndash;&gt;-->
+    <!--<record model="ir.ui.view" id="order_food_graph_view">-->
+        <!--<field name="name">order.food.graph</field>-->
+        <!--<field name="model">order_food.detail</field>-->
 
-        <field name="arch" type="xml">
-            <graph string="今日订餐">
-                <field name="food_id"/>  <!--横轴-->
-                <field name="quantity" type="measure"/>  <!--纵轴的测量维度可选-->
-            </graph>
-        </field>
-    </record>
+        <!--<field name="arch" type="xml">-->
+            <!--<graph string="今日订餐">-->
+                <!--<field name="food_id"/>  &lt;!&ndash;横轴&ndash;&gt;-->
+                <!--<field name="quantity" type="measure"/>  &lt;!&ndash;纵轴的测量维度可选&ndash;&gt;-->
+            <!--</graph>-->
+        <!--</field>-->
+    <!--</record>-->
 
       <!--&lt;!&ndash;图表，二维图表，可以切换条形图、饼图、折线图，并可以选择测量维度&ndash;&gt;-->
     <!--<record model="ir.ui.view" id="order_food_pivot_view">-->
@@ -174,13 +174,13 @@
       <field name="view_mode">tree,form,pivot</field>
     </record>
     <!-- actions opening views on models -->
-    <record model="ir.actions.act_window" id="order_food.action_window_today_order">
-      <field name="name">今日订餐窗口</field>
-        <field name="res_model">order_food.detail</field>
-        <!--添加默认过滤器-->
-        <field name="context" eval="{'search_default_today': 1}"/>
-      <field name="view_mode">graph</field>
-    </record>
+    <!--<record model="ir.actions.act_window" id="order_food.action_window_today_order">-->
+      <!--<field name="name">今日订餐窗口</field>-->
+        <!--<field name="res_model">order_food.detail</field>-->
+        <!--&lt;!&ndash;添加默认过滤器&ndash;&gt;-->
+        <!--<field name="context" eval="{'search_default_today': 1}"/>-->
+      <!--<field name="view_mode">graph</field>-->
+    <!--</record>-->
 
     <record model="ir.actions.act_window" id="order_food.action_window_showqrimage">
       <field name="name">付款二维码窗口</field>
@@ -195,7 +195,7 @@
 
     <menuitem name="订餐" id="order_food.order" parent="order_food.menu_root" action="order_food.action_window_order"/>
     <menuitem name="菜品维护" id="order_food.manage" parent="order_food.menu_root" action="order_food.action_window_foodmanage"/>
-    <menuitem name="今日订餐" id="order_food.today_order" parent="order_food.menu_root" action="order_food.action_window_today_order"/>
+    <!--<menuitem name="今日订餐" id="order_food.today_order" parent="order_food.menu_root" action="order_food.action_window_today_order"/>-->
     <menuitem name="维护付款信息" id="order_food.pay_info" parent="order_food.menu_root" action="order_food.action_window_showqrimage"/>
 
   </data>

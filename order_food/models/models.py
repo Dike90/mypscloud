@@ -108,7 +108,7 @@ class order_detail(models.Model):
 class pay_QRimage(models.Model):
     _name = 'order_food.qrimage'
 
-    department = fields.Selection(selection=[(1, 'PS产品部'), (2, '战略产品部'), (3, '营销')], index=True)
+    department = fields.Selection(selection=[(1, 'PS产品部'), (2, '战略产品部'), (3, '营销')], string='部门', index=True)
     owner = fields.Many2one('res.users', string="二维码归属", default=lambda self: self.env.user)
     QRimage = fields.Binary(string='付款二维码')
 

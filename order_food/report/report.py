@@ -8,7 +8,7 @@ class order_detail_report(models.Model):
 
     food_name = fields.Char(string='菜名', readonly=True)
     order_date = fields.Datetime(string='订单日期', readonly=True)
-    department_id = fields.Integer(string='部门编号', readonly=True)
+    department_id = fields.Selection(selection=[(1, 'PS产品部'), (2, '战略产品部'), (3, '营销')], string='部门', readonly=True)
     quantity = fields.Integer(string='数量', readonly=True)
     sale_price = fields.Float(string='销售价格', readonly=True)
 

@@ -5,11 +5,12 @@
             <field name="model">order_food.report</field>
             <field name="arch" type="xml">
                 <pivot string="订餐统计表" disable_linking="True">
-                    <field name="department_id" type="row"/>
-                    <field name="order_date" interval="day" type="col"/>
-                    <field name="food_name" type="measure"/>
-                    <field name="quantity" type="measure"/>
+                    <field name="order_date" interval="day" type="row"/>
+                    <field name="food_name" type="row"/>
+                    <field name="department_id" type="col"/>
                     <field name="sale_price" type="measure"/>
+                    <field name="quantity" type="measure"/>
+
                 </pivot>
             </field>
         </record>
