@@ -8,9 +8,8 @@
                     <field name="order_date" interval="day" type="row"/>
                     <field name="food_name" type="row"/>
                     <field name="department_id" type="col"/>
-                    <field name="sale_price" type="measure"/>
                     <field name="quantity" type="measure"/>
-
+                    <field name="sale_price" type="measure"/>
                 </pivot>
             </field>
         </record>

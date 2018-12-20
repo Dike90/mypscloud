@@ -10,7 +10,7 @@ class order_detail_report(models.Model):
     order_date = fields.Datetime(string='订单日期', readonly=True)
     department_id = fields.Selection(selection=[(1, 'PS产品部'), (2, '战略产品部'), (3, '营销')], string='部门', readonly=True)
     quantity = fields.Integer(string='数量', readonly=True)
-    sale_price = fields.Float(string='销售价格', readonly=True)
+    sale_price = fields.Float(string='总价', readonly=True)
 
     @api.model_cr
     def init(self):
@@ -23,7 +23,7 @@ class order_detail_report(models.Model):
                         o.order_date as order_date,
                         o.payment_info as department_id,
                         d.quantity as quantity,
-                        d.sale_price as sale_price
+                        (d.sale_price*d.quantity) as sale_price
                     FROM order_food_detail as d
                     LEFT JOIN order_food_order as o on d.order_id = o.id
                     LEFT JOIN order_food_food as f on d.food_id = f.id   
